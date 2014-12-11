@@ -1,0 +1,152 @@
+@(series: List[Serie])
+
+@main("Acompanhando Series") {
+
+	 <head>
+        <title>Acompanhamento de seriados</title>
+        <meta charset="UTF-8">
+        <meta name=description content="">
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap CSS -->
+		<link href="@routes.Assets.at("stylesheets/bootstrap.css")" rel="stylesheet" media="screen">        
+ 		<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" rel="javascript" media="screen"></script>
+ 		<script src="@routes.Assets.at("javascripts/jquery-extra.js")" rel="javascript" media="screen"></script>
+    </head>
+
+    
+
+	<body background="http://thesoulrepublic.com/wp-content/uploads/2013/11/wood-full-hd-black.jpg">
+    	<div class="content">
+    		<div class="jumbotron" style="background:silver">
+    			<h1 style="text-align: center;">Acompanhando séries</h1>
+    			<center><p>Aqui você pode manter o registro dos episódios já assistidos das Séries de TV que você acompanha. Clique em acompanhar série para selecionar as séries que você está acompanhando. Na lista de séries que estão sendo acompanhadas por você, temporadas e episódios estão com cores diferentes dependendo do seu status. Temporadas em vermelho ainda não foram assistidas, temporadas em amarelo ainda não foram assistidas completamente e temporadas em verde já foram assistidas. Para os episódios, os que estão em vermelho ainda não foram assistidos e os que estão em verde já. Para marcar um episódio como assistido clique no X</p></center>
+    		</div>
+
+    		<!--  Barra Lateral -->
+
+    		<div class="col-md-2">
+				<ul class="nav nav-pills nav-stacked" style="background-color: #eee">
+					<li class="active"><a href="#">Séries</a></li>
+					<li><a href="/acompanhar">Acompanhar Serie</a></li>
+				</ul>
+			</div>
+
+    		<div class="row" style="text-align: center;">
+    			
+    			<div class="col-md-3" style="left: 10%;">
+    				<div class="panel panel-info">
+		    			<h1 class="panel-title" style="font-size: xx-large;">Séries</h1>
+		    			@for(serie <- series){
+
+		    				@if(serie.isAcompanhada() == "nao") {
+		    					<div id="showHide" class="panel-heading span5">
+			    					<p class="unselectable">@serie.getNome()</p>			    					
+			    				</div>
+			    					<ul class="lista list-group">			    				
+			    						@for(temporada <- serie.getTemporadas()){
+			    							<li class="list-group-item">@temporada.getNome()ª Temporada</li>
+			    						}
+			    					</ul>
+			    			}
+		    			}
+    				</div>
+    			</div>
+
+    			
+
+    			<div class="col-md-3" style="left: 20%">
+
+    				<div class="panel panel-default">
+		    			<h1 class="panel-title" style="font-size: xx-large;">Assistindo</h1>		    			
+		    			
+
+		    				@for(serie <- series){
+		    				
+		    				
+
+		    					@if(serie.isAcompanhada() == "sim"){		    							    					
+		    						
+
+
+		    						<div id="showHide" class="panel-heading span5">
+			    						<span class="unselectable">@serie.getNome()</span>
+			    					</div>
+			    				
+
+
+			    					<ul class="lista list-group">
+			    					
+
+			    						@for(temporada <- serie.getTemporadas()){
+			    					
+			    						<div class="span5 episodio">
+			    						
+
+			    							@if(temporada.status() == "nao assistida"){
+			    								<li class="list-group-item list-group-item-danger">@temporada.getNome()ª Temporada</li>
+			    						
+
+
+			    							}else{
+			    								@if(temporada.status() == "assistida"){
+			    									<li class="list-group-item list-group-item-success">@temporada.getNome()ª Temporada</li>
+			    								}else{
+			    									<li class="list-group-item list-group-item-warning">@temporada.getNome()ª Temporada</li>
+			    								}
+			    							}
+			    						</div>
+				    						
+				    						<ul class="lista list-group">
+				    							
+
+				    							@for(episodio <- temporada.getEpisodios()){
+				    								
+
+				    								@if(episodio.assistido() == "sim"){				    									
+				    									<li class="list-group-item list-group-item-success">@episodio.getNome()</li>
+				    								
+
+				    								}else{
+
+
+				    									<li class="list-group-item list-group-item-danger">
+				    									
+				    									<form method="post" action="@routes.Application.assistido()">    							
+			    											<input type="hidden" name="id" value="@episodio.getId()">
+					            							<button type="submit" class="close" id="assistido"><span aria-hidden="true">X</span>
+					            							<span class="sr-only">Acompanhar serie</span></button>
+					        							</form>
+				    									
+				    									@episodio.getNome()</li>
+				    								
+				    								}
+				    							
+
+				    							}
+				    						
+
+				    						</ul>
+				    						
+			    						}
+			    				
+
+			    				</ul>
+		    				
+
+		    				}
+		    			
+
+		    			}
+
+
+
+    				</div>
+
+    			</div>	
+    			
+    		</div>    		
+    	</div>    
+   	</body>
+
+}
